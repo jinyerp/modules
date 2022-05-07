@@ -4,5 +4,10 @@
 
 ## 설치
 ```
-composer require jinyerp/modules
+composer require jiny/modules
 ```
+
+## 의존성
+지니Modules 은 [nWidart/laravel-modules](https://github.com/nWidart/laravel-modules)에 의존하고 있습니다.
+관련 문서는 https://nwidart.com/laravel-modules/v6/introduction 를 참조합니다.
+
