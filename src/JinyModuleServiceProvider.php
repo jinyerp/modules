@@ -3,8 +3,8 @@
 namespace Jiny\Modules;
 
 use Illuminate\Support\ServiceProvider;
-//use Illuminate\Support\Facades\Blade;
-//use Illuminate\View\Compilers\BladeCompiler;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\View\Compilers\BladeCompiler;
 use Livewire\Livewire;
 
 class JinyModuleServiceProvider extends ServiceProvider

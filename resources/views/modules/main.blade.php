@@ -50,7 +50,9 @@
         @livewire('Popup-LiveManual')
 
 
+
         @livewire('ZipInstall')
+
 
 
         {{-- Admin Rule Setting --}}
