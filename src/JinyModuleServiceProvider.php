@@ -5,11 +5,11 @@ namespace Jiny\Modules;
 use Illuminate\Support\ServiceProvider;
 //use Illuminate\Support\Facades\Blade;
 //use Illuminate\View\Compilers\BladeCompiler;
-//use Livewire\Livewire;
+use Livewire\Livewire;
 
 class JinyModuleServiceProvider extends ServiceProvider
 {
-    private $package = "jinyadmin";
+    private $package = "jinymodule";
     public function boot()
     {
         // 모듈: 라우트 설정
@@ -25,7 +25,7 @@ class JinyModuleServiceProvider extends ServiceProvider
     {
         /* 라이브와이어 컴포넌트 등록 */
         $this->app->afterResolving(BladeCompiler::class, function () {
-
+            Livewire::component('ZipInstall', \Jiny\Modules\Http\Livewire\ZipInstall::class);
         });
 
     }
