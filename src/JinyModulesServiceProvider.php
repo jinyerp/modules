@@ -19,12 +19,17 @@ class JinyModulesServiceProvider extends ServiceProvider
         // 데이터베이스
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
-        // 설정파일 배포
-        $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'modules');
+        $this->publishes([
+            __DIR__.'/../config/config.php' => config_path('modules.php'),
+        ]);
+
+        
     }
 
     public function register()
     {
+
+        
         /* 라이브와이어 컴포넌트 등록 */
         $this->app->afterResolving(BladeCompiler::class, function () {
             Livewire::component('ZipInstall', \Jiny\Modules\Http\Livewire\ZipInstall::class);

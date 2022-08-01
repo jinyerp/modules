@@ -10,7 +10,7 @@ composer require jiny/modules
 
 설정파일 배포
 ```
-php artisan vendor:publish --provider="Jiny\Modules\JinyModuleServiceProvider"
+php artisan vendor:publish --provider="Jiny\Modules\JinyModulesServiceProvider"
 ```
 
 ## 메뉴얼

@@ -215,10 +215,10 @@ return [
     */
 
     'composer' => [
-        'vendor' => 'nwidart',
+        'vendor' => 'jiny',
         'author' => [
-            'name' => 'Nicolas Widart',
-            'email' => 'n.widart@gmail.com',
+            'name' => 'hojinlee',
+            'email' => 'infohojin@gmail.com',
         ],
         'composer-output' => false,
     ],
