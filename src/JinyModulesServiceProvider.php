@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Compilers\BladeCompiler;
 use Livewire\Livewire;
 
-class JinyModuleServiceProvider extends ServiceProvider
+class JinyModulesServiceProvider extends ServiceProvider
 {
-    private $package = "jinymodule";
+    private $package = "modules";
     public function boot()
     {
         // 모듈: 라우트 설정
@@ -19,6 +19,8 @@ class JinyModuleServiceProvider extends ServiceProvider
         // 데이터베이스
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
+        // 설정파일 배포
+        $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'modules');
     }
 
     public function register()
@@ -27,7 +29,6 @@ class JinyModuleServiceProvider extends ServiceProvider
         $this->app->afterResolving(BladeCompiler::class, function () {
             Livewire::component('ZipInstall', \Jiny\Modules\Http\Livewire\ZipInstall::class);
         });
-
     }
 
 }

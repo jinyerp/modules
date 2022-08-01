@@ -1,11 +1,9 @@
 {
     "name": "jiny/modules",
-    "description": "jinyerp Modules",
+    "description": "jiny Module Manager for laravel",
     "keywords": [
-        "jinyERP",
-        "framwork",
-        "laravel",
-        "modules"
+        "jiny", "jinyphp", "jinyerp",
+        "framwork", "laravel", "modules"
     ],
     "homepage": "http://www.jinyerp.com",
     "type": "library",
@@ -38,7 +36,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Jiny\\Modules\\JinyModuleServiceProvider"
+                "Jiny\\Modules\\JinyModulesServiceProvider"
             ]
         }
     }

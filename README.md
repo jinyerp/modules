@@ -1,13 +1,17 @@
-# JinyERP Modules
-지니ERP는 라라벨 기반으로 개발된 ERP 시스템 입니다. 지니ERP는 다양한 기능을 모듈별로 관리 배포합니다.
-이를 쉽게 처리하기 위하여 별도의 관리자 페이지를 제공합니다.
+# Jiny Module Management for laravel
+`지니모듈`은 `nWidart/laravel-modules`의 확장 패키지로서 라라벨 프레임워크에서 패키지 형태의 
+모듈을 생성하고 관리하는 도구 모음 입니다.
 
 ## 설치
+컴포저 명령을 통하여 다음과 같이 콘솔 창에서 실행합니다.
 ```
 composer require jiny/modules
 ```
 
-## 의존성
-지니Modules 은 [nWidart/laravel-modules](https://github.com/nWidart/laravel-modules)에 의존하고 있습니다.
-관련 문서는 https://nwidart.com/laravel-modules/v6/introduction 를 참조합니다.
+설정파일 배포
+```
+php artisan vendor:publish --provider="Jiny\Modules\JinyModuleServiceProvider"
+```
 
+## 메뉴얼
+* [nWidart/laravel-modules](https://nwidart.com/laravel-modules/v6/introduction)
