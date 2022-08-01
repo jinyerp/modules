@@ -23,13 +23,19 @@ class JinyModulesServiceProvider extends ServiceProvider
             __DIR__.'/../config/config.php' => config_path('modules.php'),
         ]);
 
-        
+        // artisan 명령등록
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \Jiny\Modules\Console\Commands\ModuleGetUrl::class,
+                \Jiny\Modules\Console\Commands\ModuleRemove::class
+            ]);
+        }
     }
 
     public function register()
     {
 
-        
+
         /* 라이브와이어 컴포넌트 등록 */
         $this->app->afterResolving(BladeCompiler::class, function () {
             Livewire::component('ZipInstall', \Jiny\Modules\Http\Livewire\ZipInstall::class);
