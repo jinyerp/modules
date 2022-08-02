@@ -26,6 +26,7 @@ class JinyModulesServiceProvider extends ServiceProvider
         // artisan 명령등록
         if ($this->app->runningInConsole()) {
             $this->commands([
+                \Jiny\Modules\Console\Commands\ModuleInit::class,
                 \Jiny\Modules\Console\Commands\ModuleGetUrl::class,
                 \Jiny\Modules\Console\Commands\ModuleRemove::class
             ]);
