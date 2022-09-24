@@ -11,9 +11,13 @@ use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
 use ZipArchive;
 
-class ZipInstall extends Component
+use Nwidart\Modules\Facades\Module;
+use CzProject\GitPhp\Git;
+
+class ModuleStoreInstall extends Component
 {
     public $actions;
+    public $ext;
 
     public function mount()
     {
@@ -22,7 +26,8 @@ class ZipInstall extends Component
 
     public function render()
     {
-        return view("jinyadmin::livewire.popup.install");
+        // 모듈 설치 팝업창
+        return view("modules::livewire.popup.store");
     }
 
 
@@ -36,16 +41,17 @@ class ZipInstall extends Component
         'enable',
         'disable'
     ];
-    public $popupInstall = false;
+
+    public $popup = false;
 
     public function popupInstallOpen()
     {
-        $this->popupInstall = true;
+        $this->popup = true;
     }
 
     public function popupInstallClose()
     {
-        $this->popupInstall = false;
+        $this->popup = false;
     }
 
 
@@ -60,6 +66,8 @@ class ZipInstall extends Component
         $this->code = $code;
         $this->mode = "install";
 
+        dd($code);
+
         // 정보 데이터 읽기
         $row = $this->fetch($code);
         if ($row) {
@@ -68,47 +76,69 @@ class ZipInstall extends Component
             }
         }
 
+        $this->urlType($this->item['url']);
+
         $this->popupInstallOpen();
     }
 
+    private function createJsonModule()
+    {
+        $path = base_path('modules').DIRECTORY_SEPARATOR;
+        $filename = $path.'modules.json';
+        $module_info = DB::table("jiny_modules")->get();
+        $json = json_encode($module_info, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
+        file_put_contents($filename, $json);
+    }
+
+    private function urlType($url)
+    {
+        $pos = strrpos($url,'.');
+        $ext = substr($url,$pos+1);
+
+        $this->ext = $ext;
+        return $ext;
+    }
 
     /**
      *  파일 다운로드
      */
     public function download()
     {
-        $this->item['url'] = "https://github.com/jinyerp/work-module/archive/refs/heads/master.zip";
 
-        // 다운로드 url 체크
         if($this->item['url']) {
+            // 다운로드 url 체크
+            $ext = $this->urlType($this->item['url']);
 
-            // 1. 다운로드
-            $path = base_path('Modules').DIRECTORY_SEPARATOR;
-            $filename = $path.str_replace("/","-",$this->item['code']).".zip";
-            $source = $this->item['url'];
-            $response = (new Client)->get($source);
-            file_put_contents($filename, $response->getBody());
-
-            $vendor = explode("/",$this->item['code']);
-
-            // 2. 압축풀기
-            if (file_exists($filename)) {
-                $archive = new ZipArchive;
-                $archive->open($filename);
-                $archive->extractTo($path.$vendor[0]); // 압축풀기
-                $archive->close();
-
-                // 다운로드 파일 삭제
-                unlink($filename);
+            $path = base_path('modules').DIRECTORY_SEPARATOR;
+            if(!is_dir($path)) {
+                mkdir($path, 777, true);
             }
 
-            // laravel-module add
-            $modulesPath = base_path("Modules").DIRECTORY_SEPARATOR."modules_statuses.json";
-            $modules = json_decode(file_get_contents($modulesPath), true);
-            $code = ucfirst($this->item['code']);
-            $modules[$code] = false;
-            file_put_contents($modulesPath, json_encode($modules,JSON_PRETTY_PRINT));
+            if($ext == "zip") {
+                // 1. 다운로드
+                $filename = $path.str_replace("/","-",$this->item['code']).".zip";
+                $source = $this->item['url'];
+                $response = (new Client)->get($source);
+                file_put_contents($filename, $response->getBody());
 
+                $vendor = explode("/",$this->item['code']);
+
+                // 2. 압축풀기
+                if (file_exists($filename)) {
+                    $archive = new ZipArchive;
+                    $archive->open($filename);
+                    $archive->extractTo($path.$vendor[0]); // 압축풀기
+                    $archive->close();
+
+                    // 다운로드 파일 삭제
+                    unlink($filename);
+                }
+            } else
+            if($ext == "git") {
+                $vendor = explode("/",$this->item['code']);
+
+                dd($path."/".$vendor[0]);
+            }
 
             // 4. DB 정보 갱신
             $row = DB::table("jiny_modules")->where('code',$this->item['code'])->first();
@@ -127,8 +157,104 @@ class ZipInstall extends Component
         $this->mode = null;
         $this->popupInstallClose();
 
+
+        // 모듈 정보파일 새로 생성
+        $this->createJsonModule();
+
+        // Livewire Table을 갱신을 호출합니다.
+
+        $this->emit('refeshTable');
+
+    }
+
+    public function clone($code)
+    {
+        $this->code = $code;
+        $this->mode = "clone";
+
+        // 정보 데이터 읽기
+        $row = $this->fetch($code);
+        if ($row) {
+            foreach($row as $key => $value) {
+                $this->item[$key] = $value;
+            }
+        }
+
+        $this->popupInstallOpen();
+    }
+
+
+    public function repoClone()
+    {
+        // 경로 생성
+        $vendor = explode("/",$this->item['code']);
+        $path = base_path('modules').DIRECTORY_SEPARATOR.$vendor[0];
+        if(!is_dir($path)) {
+            mkdir($path, 777, true);
+        }
+
+        // 깃 저장소 복제
+        $git = new Git;
+        $repo = $git->cloneRepository($this->item['url'], $path);
+
+        // 4. DB 정보 갱신
+        $row = DB::table("jiny_modules")->where('code',$this->item['code'])->first();
+        if($row) {
+            // 기존 설치되어 있는 경우, 설치일자만 재설정
+            DB::table("jiny_modules")->where('code',$this->item['code'])->update([
+                'enable'=>1,
+                'installed'=> date("Y-m-d H:i:s")
+            ]);
+        }
+
+        // 모듈 활성화
+        $module = Module::find($this->item['code']);
+        $module->enable();
+
+        $this->item=[]; // 초기화
+        $this->mode = null;
+        $this->popupInstallClose();
+
+        // 모듈 정보파일 새로 생성
+        $this->createJsonModule();
+
         // Livewire Table을 갱신을 호출합니다.
         $this->emit('refeshTable');
+    }
+
+
+    public function repoPull()
+    {
+        // 경로 생성
+        $vendor = explode("/",$this->code);
+        $path = base_path('modules').DIRECTORY_SEPARATOR.$vendor[0];
+        if(!is_dir($path)) {
+            mkdir($path, 777, true);
+        }
+
+        // 깃 저장소 복제
+        $git = new Git;
+        $repo = $git->open($path);
+        $repo->pull('origin');
+
+        $this->item=[]; // 초기화
+        $this->mode = null;
+        $this->popupInstallClose();
+
+        // Livewire Table을 갱신을 호출합니다.
+        // 생략 // $this->emit('refeshTable');
+    }
+
+    public function upgrade()
+    {
+
+        $this->item=[]; // 초기화
+        $this->mode = null;
+        $this->popupInstallClose();
+
+        // Livewire Table을 갱신을 호출합니다.
+        $this->emit('refeshTable');
+
     }
 
 
@@ -156,22 +282,16 @@ class ZipInstall extends Component
         if ($this->item['code']) {
 
             // 모든 파일을 삭제
-            $path = base_path('Modules').DIRECTORY_SEPARATOR;
+            $path = base_path('modules').DIRECTORY_SEPARATOR;
             $filename = $path.$this->item['code'];
             if(file_exists($filename) && is_dir($filename)) {
+                //chmod($filename, 0777);
                 $this->unlinkAll($filename);
             }
 
-            // laravel-module add
-            $modulesPath = base_path("Modules").DIRECTORY_SEPARATOR."modules_statuses.json";
-            $modules = json_decode(file_get_contents($modulesPath), true);
-            $code = ucfirst($this->item['code']);
-            unset($modules[$code]);
-            file_put_contents($modulesPath, json_encode($modules,JSON_PRETTY_PRINT));
-
             // 테이블 갱신
             DB::table("jiny_modules")->where('code',$this->item['code'])->update([
-                'enable'=>false,
+                'enable'=>0,
                 'installed'=> false
             ]);
         }
@@ -179,6 +299,9 @@ class ZipInstall extends Component
         $this->item=[]; // 초기화
         $this->mode = null;
         $this->popupInstallClose();
+
+        // 모듈 정보파일 새로 생성
+        $this->createJsonModule();
 
         // Livewire Table을 갱신을 호출합니다.
         $this->emit('refeshTable');
@@ -191,7 +314,7 @@ class ZipInstall extends Component
             if(is_dir($dir.DIRECTORY_SEPARATOR.$file)) {
                 $this->unlinkAll($dir.DIRECTORY_SEPARATOR.$file);
             } else {
-                //dump($dir.DIRECTORY_SEPARATOR.$file);
+                chmod($dir.DIRECTORY_SEPARATOR.$file, 0777); // permission 방지
                 unlink($dir.DIRECTORY_SEPARATOR.$file);
             }
         }
@@ -208,36 +331,28 @@ class ZipInstall extends Component
 
     public function enable($code)
     {
-        // laravel-module
-        $modulesPath = base_path("Modules").DIRECTORY_SEPARATOR."modules_statuses.json";
-        $modules = json_decode(file_get_contents($modulesPath), true);
-        $code = ucfirst($code);
-        $modules[$code] = true;
-        file_put_contents($modulesPath, json_encode($modules,JSON_PRETTY_PRINT));
+        $module = Module::find($code);
+        $module->enable();
 
-        //$this->popupInstallClose();
+        DB::table("jiny_modules")->where('code',$code)->update([
+            'enable'=>1
+        ]);
 
         // Livewire Table을 갱신을 호출합니다.
         $this->emit('refeshTable');
-
     }
 
     public function disable($code)
     {
-        //$this->popupInstallOpen();
+        $module = Module::find($code);
+        $module->disable();
 
-        // laravel-module
-        $modulesPath = base_path("Modules").DIRECTORY_SEPARATOR."modules_statuses.json";
-        $modules = json_decode(file_get_contents($modulesPath), true);
-        $code = ucfirst($code);
-        $modules[$code] = false;
-        file_put_contents($modulesPath, json_encode($modules,JSON_PRETTY_PRINT));
-
-        //$this->popupInstallClose();
+        DB::table("jiny_modules")->where('code',$code)->update([
+            'enable'=>0
+        ]);
 
         // Livewire Table을 갱신을 호출합니다.
         $this->emit('refeshTable');
-
     }
 
 

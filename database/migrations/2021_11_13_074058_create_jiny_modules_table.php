@@ -18,6 +18,8 @@ class CreateJinyModulesTable extends Migration
             $table->timestamps();
             $table->string('enable')->default(1);
 
+            $table->string('type')->nullable();
+
             $table->string('code')->nullable();
             $table->string('image')->nullable();
             $table->string('title')->nullable();

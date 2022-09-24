@@ -7,20 +7,11 @@
         @endif
         <!-- end -->
 
-        {{--
-        @if (isset($actions['view_title']) && !empty($actions['view_title']))
-            @includeIf($actions['view_title'])
-        @else
-            @include("jinytable::title")
-        @endif
-        --}}
-        <!-- end page title -->
-
-
         <div class="relative">
             <div class="absolute right-0 bottom-4">
                 <div class="btn-group">
                     <x-button id="btn-livepopup-manual" secondary wire:click="$emit('popupManualOpen')">메뉴얼</x-button>
+                    <a href="/_admin/modules/store" class="btn btn-success">스토어</a>
                     <x-button id="btn-livepopup-create" primary wire:click="$emit('popupFormOpen')">신규추가</x-button>
                 </div>
             </div>
@@ -50,8 +41,7 @@
         @livewire('Popup-LiveManual')
 
 
-
-        @livewire('ZipInstall')
+        @livewire('ModuleInstall')
 
 
 

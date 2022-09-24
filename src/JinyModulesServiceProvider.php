@@ -39,7 +39,10 @@ class JinyModulesServiceProvider extends ServiceProvider
 
         /* 라이브와이어 컴포넌트 등록 */
         $this->app->afterResolving(BladeCompiler::class, function () {
-            Livewire::component('ZipInstall', \Jiny\Modules\Http\Livewire\ZipInstall::class);
+            Livewire::component('ModuleInstall', \Jiny\Modules\Http\Livewire\ModuleInstall::class);
+
+            Livewire::component('ModuleStore', \Jiny\Modules\Http\Livewire\ModuleStore::class);
+            Livewire::component('ModuleStoreInstall', \Jiny\Modules\Http\Livewire\ModuleStoreInstall::class);
         });
     }
 

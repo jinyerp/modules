@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
+use Nwidart\Modules\Facades\Module;
+use CzProject\GitPhp\Git;
+
 use Jiny\Table\Http\Controllers\ResourceController;
 class Modules extends ResourceController
 {
@@ -20,24 +23,55 @@ class Modules extends ResourceController
     {
         parent::__construct();  // setting Rule 초기화
         $this->setVisit($this); // Livewire와 양방향 의존성 주입
-        //$this->middleware('auth');
 
         $this->actions['table'] = "jiny_modules"; // 테이블 정보
         $this->actions['paging'] = 100; // 페이지 기본값
 
-        $this->actions['view_main'] = "jinymodule::modules.main";
-        $this->actions['view_main_layout'] = "jinymodule::modules.main_layout";
+        $this->actions['view_main'] = "modules::modules.main";
+        $this->actions['view_main_layout'] = "modules::modules.main_layout";
 
-        $this->actions['view_list'] = "jinymodule::modules.list";
-        $this->actions['view_form'] = "jinymodule::modules.form";
+        $this->actions['view_list'] = "modules::modules.list";
+        $this->actions['view_form'] = "modules::modules.form";
 
 
         // 테마설정
-        setTheme("admin/sidebar");
+        //setTheme("admin/sidebar");
     }
 
     public function hookIndexed($wire, $rows)
     {
+        $path = base_path('modules').DIRECTORY_SEPARATOR;
+
+        foreach($rows as $i => $row) {
+            if($row->url) {
+                $rows[$i]->ext = substr($row->url,strrpos($row->url,'.')+1);
+            } else {
+                $rows[$i]->ext = "";
+            }
+
+
+
+            if(is_dir($path.$row->code)) {
+                $git = new Git;
+                $repo = $git->open($path.$row->code);
+                $tags = $repo->getTags();
+                if(is_array($tags)) {
+                    $version = array_reverse($tags);
+                    $rows[$i]->version = $version[0]; //최종버젼
+                } else {
+                    $rows[$i]->version = null;
+                }
+            } else {
+                $rows[$i]->version = null;
+            }
+
+
+        }
+
+        /*
+        dd(Module::all());
+
+
         $path = base_path('Modules').DIRECTORY_SEPARATOR."modules_statuses.json";
         if(file_exists($path)) {
             $modules = json_decode(file_get_contents($path),true);
@@ -56,6 +90,8 @@ class Modules extends ResourceController
                 $rows[$i]->installed = false;
             }
         }
+        */
+
 
         return $rows;
     }
