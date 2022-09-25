@@ -17,7 +17,6 @@
 
         @livewire('ModuleStore')
 
-
         {{-- Admin Rule Setting --}}
         @include('jinytable::setActionRule')
 

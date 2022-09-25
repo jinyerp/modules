@@ -21,7 +21,7 @@ class SettingController extends ConfigController
 
         ##
         $this->actions['filename'] = "jiny/modules/setting"; // 설정파일명(경로)
-        $this->actions['view_form'] = "modules::admin.setting.form";
+        $this->actions['view_form'] = "modules::setting.form";
 
         // 테마설정
         setTheme("admin/sidebar");

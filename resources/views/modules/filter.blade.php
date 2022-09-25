@@ -16,15 +16,7 @@
                     </x-form-hor>
                 </x-col-6>
                 <x-col-6>
-                    <x-form-hor>
-                        <x-form-label>타이틀</x-form-label>
-                        <x-form-item>
-                            {!! xInputText()
-                                ->setWire('model.defer',"filter.title")
-                                ->setWidth("small")
-                            !!}
-                        </x-form-item>
-                    </x-form-hor>
+
                 </x-col-6>
             </x-row>
 

@@ -8,6 +8,7 @@
         @endif
 
         <div class="card-header px-4 pt-4">
+            @if($item->installed)
             <div class="card-actions float-end">
                 <div class="dropdown position-relative">
                     <a href="#" data-bs-toggle="dropdown" data-bs-display="static">
@@ -16,20 +17,18 @@
                     <div class="dropdown-menu dropdown-menu-end">
                         {{-- <a class="dropdown-item" href="#">Action</a> --}}
 
-                        @if($item->installed)
-                            @if($item->ext == "zip")
-                            <a class="dropdown-item" href="#" wire:click="$emit('install','{{$item->code}}')">Upgrade</a>
-                            @else
-                            <a class="dropdown-item" href="#" wire:click="$emit('install','{{$item->code}}')">Pull</a>
-                            @endif
+                        @if($item->ext == "zip")
+                        <a class="dropdown-item" href="#" wire:click="$emit('install','{{$item->code}}')">Upgrade</a>
+                        @else
+                        <a class="dropdown-item" href="#" wire:click="$emit('install','{{$item->code}}')">Pull</a>
                         @endif
 
-                        @if($item->installed)
                         <a class="dropdown-item" href="#" wire:click="$emit('uninstall','{{$item->code}}')">제거</a>
-                        @endif
+
                     </div>
                 </div>
             </div>
+            @endif
 
             <h5 class="card-title mb-0">{!! $popupEdit($item, $item->title) !!}</h5>
 

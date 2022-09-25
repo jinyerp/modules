@@ -4,7 +4,7 @@
 
     <div class="row">
         @foreach ($modules as $item)
-        <div class="col-12 col-md-6 col-lg-3">
+        <div class="col-12 col-md-6 col-lg-3 mb-2">
             <div class="card h-100">
                 @if($item['image'])
                 <img class="card-img-top" src="img/photos/unsplash-1.jpg" alt="Unsplash">

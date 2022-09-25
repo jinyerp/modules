@@ -30,7 +30,9 @@ class Modules extends ResourceController
         $this->actions['view_main'] = "modules::modules.main";
         $this->actions['view_main_layout'] = "modules::modules.main_layout";
 
+        $this->actions['view_filter'] = "modules::modules.filter";
         $this->actions['view_list'] = "modules::modules.list";
+
         $this->actions['view_form'] = "modules::modules.form";
 
 
