@@ -186,9 +186,11 @@ class ModuleInstall extends Component
 
     public function repoClone()
     {
+        $moduleName = $this->moduleName($this->item['code']);
+
         // 경로 생성
-        $vendor = explode("/",$this->item['code']);
-        $path = base_path('modules').DIRECTORY_SEPARATOR.$vendor[0];
+        //$vendor = explode("/",$this->item['code']);
+        $path = base_path('modules').DIRECTORY_SEPARATOR.$moduleName;
         if(!is_dir($path)) {
             mkdir($path, 777, true);
         }
@@ -208,8 +210,10 @@ class ModuleInstall extends Component
         }
 
         // 모듈 활성화
-        $module = Module::find($this->item['code']);
-        $module->enable();
+        if($module = Module::find($moduleName)) {
+            $module->enable();
+        }
+
 
         $this->item=[]; // 초기화
         $this->mode = null;
@@ -220,6 +224,17 @@ class ModuleInstall extends Component
 
         // Livewire Table을 갱신을 호출합니다.
         $this->emit('refeshTable');
+    }
+
+    // CamelCase 형태로 모듈 이름 반환
+    private function moduleName($code)
+    {
+        $tmep = explode('-',$code);
+        $moduleName = "";
+        foreach($temp as $name) {
+            $moduleName .= ucfirst($name);
+        }
+        return $moduleName;
     }
 
 

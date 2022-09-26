@@ -141,9 +141,11 @@ class ModuleStore extends Component
 
     private function repoClone($item)
     {
+        $moduleName = $this->moduleName($this->item['code']);
+
         // 경로 생성
-        $vendor = explode("/",$item['code']);
-        $path = base_path('modules').DIRECTORY_SEPARATOR.$vendor[0];
+        //$vendor = explode("/",$item['code']);
+        $path = base_path('modules').DIRECTORY_SEPARATOR.$moduleName;
         if(!is_dir($path)) {
             mkdir($path, 777, true);
         }
@@ -153,24 +155,24 @@ class ModuleStore extends Component
         $git = new Git;
         $repo = $git->cloneRepository($item['url'], $path);
 
-        // 4. DB 정보 갱신
-        $row = DB::table("jiny_modules")->where('code',$item['code'])->first();
-        if($row) {
-            // 기존 설치되어 있는 경우, 설치일자만 재설정
-            DB::table("jiny_modules")->where('code',$item['code'])->update([
-                'enable'=>1,
-                'installed'=> date("Y-m-d H:i:s")
-            ]);
+        // 4. 모듈정보 DB 삽입
+        DB::table("jiny_modules")->insert([
+            'code' => $item['code'],
+            'enable'=>1,
+            'installed'=> date("Y-m-d H:i:s")
+        ]);
 
-
-            $code = $item['code'];
-            $this->modules[$code]['enable'] = 1;
-            $this->modules[$code]['installed'] = date("Y-m-d H:i:s");
-        }
+        // json 정보 갱신
+        $code = $item['code'];
+        $this->modules[$code]['enable'] = 1;
+        $this->modules[$code]['installed'] = date("Y-m-d H:i:s");
 
         // 모듈 활성화
-        $module = Module::find($item['code']);
-        $module->enable();
+        $module = Module::find($moduleName);
+        if($module) {
+            $module->enable();
+        }
+
 
         //$this->item=[]; // 초기화
         //$this->mode = null;
@@ -182,6 +184,17 @@ class ModuleStore extends Component
 
         // Livewire Table을 갱신을 호출합니다.
         $this->emit('refeshTable');
+    }
+
+    // CamelCase 형태로 모듈 이름 반환
+    private function moduleName($code)
+    {
+        $tmep = explode('-',$code);
+        $moduleName = "";
+        foreach($temp as $name) {
+            $moduleName .= ucfirst($name);
+        }
+        return $moduleName;
     }
 
     private function createJsonModule()
