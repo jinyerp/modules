@@ -1,19 +1,31 @@
 <?php
 
 use Illuminate\Support\Facades\DB;
+use Nwidart\Modules\Facades\Module;
 
 if(!function_exists("isModule")) {
+
     function isModule($code) {
-        /*
-        $row = DB::table('jiny_modules')
-            ->where('enable',true)
-            ->where('code',$code)->first();
-        if($row) {
-            return $row->installed;
+
+        $name = moduleName($code);
+        if(Module::has($name)) {
+            return true;
         }
-        return false;
-        */
-        if(function_exists($code)) return true;
+
         return false;
     }
 }
+
+if(!function_exists("moduleName")) {
+    function moduleName($code)
+    {
+        $temp = explode('-',$code);
+        $moduleName = "";
+
+        foreach($temp as $name) {
+            $moduleName .= ucfirst($name);
+        }
+        return $moduleName;
+    }
+}
+
