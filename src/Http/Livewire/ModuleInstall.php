@@ -229,8 +229,10 @@ class ModuleInstall extends Component
     // CamelCase 형태로 모듈 이름 반환
     private function moduleName($code)
     {
-        $tmep = explode('-',$code);
+        //dd($code);
+        $temp = explode('-',$code);
         $moduleName = "";
+
         foreach($temp as $name) {
             $moduleName .= ucfirst($name);
         }
@@ -296,18 +298,19 @@ class ModuleInstall extends Component
     {
         if ($this->item['code']) {
 
+            $moduleName = $this->moduleName($this->item['code']);
+
             // 모든 파일을 삭제
             $path = base_path('modules').DIRECTORY_SEPARATOR;
-            $filename = $path.$this->item['code'];
+            $filename = $path.$moduleName;
             if(file_exists($filename) && is_dir($filename)) {
-                //chmod($filename, 0777);
                 $this->unlinkAll($filename);
             }
 
             // 테이블 갱신
             DB::table("jiny_modules")->where('code',$this->item['code'])->update([
                 'enable'=>0,
-                'installed'=> false
+                'installed'=> ""
             ]);
         }
 
