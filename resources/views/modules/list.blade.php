@@ -84,20 +84,5 @@
 
     </div>
 </div>
-
-{{--
-    <div class="bg-white border rounded-sm">
-        <div class="p-2">
-
-        </div>
-
-        <div class="p-2 border-t">
-
-        </div>
-
-
-
-    </div>
---}}
 @endforeach
 

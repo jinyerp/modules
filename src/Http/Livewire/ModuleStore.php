@@ -1,9 +1,9 @@
 <?php
-
 namespace Jiny\Modules\Http\Livewire;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Validator;
@@ -22,7 +22,6 @@ class ModuleStore extends Component
     {
         $rows = $this->getStoreUrl();
         $this->modules = $this->parsing($rows);
-        //dd($this->modules);
     }
 
     public function render()
@@ -30,6 +29,7 @@ class ModuleStore extends Component
         return view("modules::store.livewire.list");
     }
 
+    // 서버에서 모듈 목록 읽기
     private function getStoreUrl()
     {
         $url = "https://jinyerp-src.github.io/module-server/modules.json";
@@ -38,6 +38,7 @@ class ModuleStore extends Component
         return json_decode($body);
     }
 
+    // 모듈 목록과 설치 정보 비교
     private function parsing($rows)
     {
         // 설치된 모듈 정보
@@ -68,34 +69,14 @@ class ModuleStore extends Component
 
             $code = $row->code;
             $data[$code] = $item;
-            //$rows[$i] = $item;
-
-
-            /*
-            if(is_dir($path.$row->code)) {
-                $git = new Git;
-                $repo = $git->open($path.$row->code);
-                $tags = $repo->getTags();
-                if(is_array($tags)) {
-                    $version = array_reverse($tags);
-                    $rows[$i]->version = $version[0]; //최종버젼
-                } else {
-                    $rows[$i]->version = null;
-                }
-            } else {
-                $rows[$i]->version = null;
-            }
-            */
-
-
         }
 
         return $data;
     }
 
+    // 목록 배열에서 아이템 코드 정보 읽기
     private function getItem($code)
     {
-        //dd($this->modules);
         foreach( $this->modules as $module) {
             if($module['code'] == $code) {
                 return $module;
@@ -103,17 +84,16 @@ class ModuleStore extends Component
         }
     }
 
+    // 모듈 설치
     public function install($code)
     {
-
         $module = $this->getItem($code);
         if($module) {
-            //dd($module);
             if($module['ext'] == "zip") {
                 dd($code.": download zip file");
             } else
             if($module['ext'] == "git") {
-                //dd($code.": clone");
+                // 모듈 git clone 복제
                 $this->repoClone($module);
             }
         }
@@ -139,16 +119,22 @@ class ModuleStore extends Component
         $this->popup = false;
     }
 
+    // 모듈 깃복제하기
     private function repoClone($item)
     {
-        $moduleName = $this->moduleName($this->item['code']);
+        //dump($item);
 
-        // 경로 생성
-        //$vendor = explode("/",$item['code']);
+        // 모듈이름 설정
+        $moduleName = $this->moduleName($item['code']);
+        //dd($moduleName);
+
+        // 모듈 설치 경로 생성
         $path = base_path('modules').DIRECTORY_SEPARATOR.$moduleName;
         if(!is_dir($path)) {
             mkdir($path, 777, true);
         }
+
+        //dd($path);
 
 
         // 깃 저장소 복제
@@ -156,11 +142,33 @@ class ModuleStore extends Component
         $repo = $git->cloneRepository($item['url'], $path);
 
         // 4. 모듈정보 DB 삽입
-        DB::table("jiny_modules")->insert([
-            'code' => $item['code'],
-            'enable'=>1,
-            'installed'=> date("Y-m-d H:i:s")
-        ]);
+        $module = DB::table("jiny_modules")->where('code', $item['code'])->first();
+        if($module) {
+            // 모듈 정보 갱신
+            DB::table("jiny_modules")->where('code', $item['code'])->update([
+                'code' => $item['code'],
+                'enable'=>1,
+                'installed'=> date("Y-m-d H:i:s")
+            ]);
+        } else {
+            // 신규 추가
+            DB::table("jiny_modules")->insert([
+                'code' => $item['code'],
+                'enable'=>1,
+                'installed'=> date("Y-m-d H:i:s"),
+
+                'title' => $item['title'],
+                'url' => $item['url'],
+                'image' => $item['image'],
+                'version' => $item['version'],
+                'description' => $item['description'],
+
+                'created_at'=> date("Y-m-d H:i:s"),
+                'updated_at'=> date("Y-m-d H:i:s"),
+                'user_id'=> Auth::user()->id
+            ]);
+        }
+
 
         // json 정보 갱신
         $code = $item['code'];
