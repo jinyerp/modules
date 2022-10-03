@@ -76,18 +76,18 @@ class ModuleInstall extends Component
 
         $this->urlType($this->item['url']);
 
-
-
         $this->popupInstallOpen();
     }
 
     private function createJsonModule()
     {
+
         $path = base_path('modules').DIRECTORY_SEPARATOR;
         $filename = $path.'modules.json';
         $module_info = DB::table("jiny_modules")->get();
         $json = json_encode($module_info, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
         file_put_contents($filename, $json);
+
     }
 
     private function urlType($url)
@@ -137,7 +137,7 @@ class ModuleInstall extends Component
             if($ext == "git") {
                 $vendor = explode("/",$this->item['code']);
 
-                dd($path."/".$vendor[0]);
+                //dd($path."/".$vendor[0]);
             }
 
             // 4. DB 정보 갱신
@@ -159,10 +159,9 @@ class ModuleInstall extends Component
 
 
         // 모듈 정보파일 새로 생성
-        $this->createJsonModule();
+        //$this->createJsonModule();
 
         // Livewire Table을 갱신을 호출합니다.
-
         $this->emit('refeshTable');
 
     }
@@ -220,7 +219,7 @@ class ModuleInstall extends Component
         $this->popupInstallClose();
 
         // 모듈 정보파일 새로 생성
-        $this->createJsonModule();
+        //$this->createJsonModule();
 
         // Livewire Table을 갱신을 호출합니다.
         $this->emit('refeshTable');
@@ -319,7 +318,7 @@ class ModuleInstall extends Component
         $this->popupInstallClose();
 
         // 모듈 정보파일 새로 생성
-        $this->createJsonModule();
+        //$this->createJsonModule();
 
         // Livewire Table을 갱신을 호출합니다.
         $this->emit('refeshTable');
