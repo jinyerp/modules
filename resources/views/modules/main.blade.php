@@ -12,7 +12,9 @@
                 <div class="btn-group">
                     <x-button id="btn-livepopup-manual" secondary wire:click="$emit('popupManualOpen')">메뉴얼</x-button>
                     <a href="/_admin/modules/store" class="btn btn-success">스토어</a>
-                    <x-button id="btn-livepopup-create" primary wire:click="$emit('popupFormOpen')">신규추가</x-button>
+                    <x-button id="btn-livepopup-create" primary wire:click="$emit('popupFormOpen')">
+                        등록
+                    </x-button>
                 </div>
             </div>
         </div>
