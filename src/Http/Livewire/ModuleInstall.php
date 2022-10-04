@@ -111,7 +111,7 @@ class ModuleInstall extends Component
 
             $path = base_path('Modules').DIRECTORY_SEPARATOR;
             if(!is_dir($path)) {
-                mkdir($path, 777, true);
+                mkdir($path, 0777, true);
             }
 
             if($ext == "zip") {
@@ -191,8 +191,11 @@ class ModuleInstall extends Component
         //$vendor = explode("/",$this->item['code']);
         $path = base_path('Modules').DIRECTORY_SEPARATOR.$moduleName;
         if(!is_dir($path)) {
-            mkdir($path, 777, true);
+            mkdir($path, 0777, true);
+//chmod($path, 777);
         }
+
+//dd($path);
 
         // 깃 저장소 복제
         $git = new Git;
@@ -245,7 +248,7 @@ class ModuleInstall extends Component
         $vendor = explode("/",$this->code);
         $path = base_path('Modules').DIRECTORY_SEPARATOR.$vendor[0];
         if(!is_dir($path)) {
-            mkdir($path, 777, true);
+            mkdir($path, 0777, true);
         }
 
         // 깃 저장소 복제
