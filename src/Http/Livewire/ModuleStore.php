@@ -129,7 +129,7 @@ class ModuleStore extends Component
         //dd($moduleName);
 
         // 모듈 설치 경로 생성
-        $path = base_path('modules').DIRECTORY_SEPARATOR.$moduleName;
+        $path = base_path('Modules').DIRECTORY_SEPARATOR.$moduleName;
         if(!is_dir($path)) {
             mkdir($path, 777, true);
         }
@@ -207,7 +207,7 @@ class ModuleStore extends Component
 
     private function createJsonModule()
     {
-        $path = base_path('modules').DIRECTORY_SEPARATOR;
+        $path = base_path('Modules').DIRECTORY_SEPARATOR;
         $filename = $path.'modules.json';
         $module_info = DB::table("jiny_modules")->get();
         $json = json_encode($module_info, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);

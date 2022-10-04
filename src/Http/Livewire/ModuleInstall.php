@@ -82,7 +82,7 @@ class ModuleInstall extends Component
     private function createJsonModule()
     {
 
-        $path = base_path('modules').DIRECTORY_SEPARATOR;
+        $path = base_path('Modules').DIRECTORY_SEPARATOR;
         $filename = $path.'modules.json';
         $module_info = DB::table("jiny_modules")->get();
         $json = json_encode($module_info, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
@@ -109,7 +109,7 @@ class ModuleInstall extends Component
             // 다운로드 url 체크
             $ext = $this->urlType($this->item['url']);
 
-            $path = base_path('modules').DIRECTORY_SEPARATOR;
+            $path = base_path('Modules').DIRECTORY_SEPARATOR;
             if(!is_dir($path)) {
                 mkdir($path, 777, true);
             }
@@ -189,7 +189,7 @@ class ModuleInstall extends Component
 
         // 경로 생성
         //$vendor = explode("/",$this->item['code']);
-        $path = base_path('modules').DIRECTORY_SEPARATOR.$moduleName;
+        $path = base_path('Modules').DIRECTORY_SEPARATOR.$moduleName;
         if(!is_dir($path)) {
             mkdir($path, 777, true);
         }
@@ -243,7 +243,7 @@ class ModuleInstall extends Component
     {
         // 경로 생성
         $vendor = explode("/",$this->code);
-        $path = base_path('modules').DIRECTORY_SEPARATOR.$vendor[0];
+        $path = base_path('Modules').DIRECTORY_SEPARATOR.$vendor[0];
         if(!is_dir($path)) {
             mkdir($path, 777, true);
         }
@@ -300,7 +300,7 @@ class ModuleInstall extends Component
             $moduleName = $this->moduleName($this->item['code']);
 
             // 모든 파일을 삭제
-            $path = base_path('modules').DIRECTORY_SEPARATOR;
+            $path = base_path('Modules').DIRECTORY_SEPARATOR;
             $filename = $path.$moduleName;
             if(file_exists($filename) && is_dir($filename)) {
                 $this->unlinkAll($filename);
