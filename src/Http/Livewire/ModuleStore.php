@@ -136,10 +136,21 @@ class ModuleStore extends Component
 
         //dd($path);
 
+        $whitelist = array(
+            '127.0.0.1',
+            '::1'
+        );
 
         // 깃 저장소 복제
         $git = new Git;
-        $repo = $git->cloneRepository($item['url'], $path);
+
+        if(!in_array($_SERVER['REMOTE_ADDR'], $whitelist)){
+            $url = str_replace("https://github.com/","git@github.com:",$item['url']); //ssh 접속으로 전환
+        } else {
+            // localhost
+            $url = $item['url'];
+        }
+        $repo = $git->cloneRepository($url, $path);
 
         // 4. 모듈정보 DB 삽입
         $module = DB::table("jiny_modules")->where('code', $item['code'])->first();

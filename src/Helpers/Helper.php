@@ -4,14 +4,10 @@ use Illuminate\Support\Facades\DB;
 use Nwidart\Modules\Facades\Module;
 
 if(!function_exists("isModule")) {
-
     function isModule($code) {
-
-        $name = moduleName($code);
-        if(Module::has($name)) {
+        if(Module::has($code)) {
             return true;
         }
-
         return false;
     }
 }
