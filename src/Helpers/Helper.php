@@ -19,7 +19,12 @@ if(!function_exists("moduleName")) {
         $moduleName = "";
 
         foreach($temp as $name) {
-            $moduleName .= ucfirst($name);
+            if(strlen($name) <=2) {
+                $moduleName .= strtoupper($name);
+            } else {
+                $moduleName .= ucfirst($name);
+            }
+
         }
         return $moduleName;
     }

@@ -208,12 +208,15 @@ class ModuleStore extends Component
     // CamelCase 형태로 모듈 이름 반환
     private function moduleName($code)
     {
+        return moduleName($code);
+        /*
         $temp = explode('-',$code);
         $moduleName = "";
         foreach($temp as $name) {
             $moduleName .= ucfirst($name);
         }
         return $moduleName;
+        */
     }
 
     private function createJsonModule()
