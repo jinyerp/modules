@@ -131,7 +131,7 @@ class ModuleStore extends Component
         // 모듈 설치 경로 생성
         $path = base_path('Modules').DIRECTORY_SEPARATOR.$moduleName;
         if(!is_dir($path)) {
-            mkdir($path, 777, true);
+            mkdir($path, 0777, true);
         }
 
         //dd($path);
