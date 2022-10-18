@@ -8,7 +8,7 @@ $prefix = "_admin";//admin_prefix();
 
 Route::middleware(['web','auth:sanctum', 'verified'])
 ->name('admin.')
-->prefix($prefix)->group(function () {
+->prefix("jiny/".$prefix)->group(function () {
 
     // 모듈관리
     Route::get('modules',[\Jiny\Modules\Http\Controllers\Modules::class,"index"]);
