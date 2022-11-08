@@ -23,6 +23,14 @@ class JinyModulesServiceProvider extends ServiceProvider
             __DIR__.'/../config/config.php' => config_path('modules.php'),
         ]);
 
+        //actions
+        // php artisan vendor:publish --tag=actions
+        $this->publishes([
+            __DIR__.'/../resources/actions' => resource_path('actions'),
+        ], 'actions');
+
+
+
         // artisan 명령등록
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -44,6 +52,9 @@ class JinyModulesServiceProvider extends ServiceProvider
             Livewire::component('ModuleStore', \Jiny\Modules\Http\Livewire\ModuleStore::class);
             Livewire::component('ModuleStoreInstall', \Jiny\Modules\Http\Livewire\ModuleStoreInstall::class);
         });
+
+        
+
     }
 
 }

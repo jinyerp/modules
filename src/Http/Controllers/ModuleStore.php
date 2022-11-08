@@ -79,11 +79,7 @@ class ModuleStore extends ResourceController
     public function index(Request $request)
     {
         // 메뉴 설정
-        $user = Auth::user();
-        $this->setUserMenu($user);
-
-        //$rows = $this->getStoreUrl();
-        //$rows = $this->parsing($rows);
+        $this->menu_init();
 
         return view("modules::store.main",[
             'actions' => $this->actions
