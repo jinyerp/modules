@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 
-use Jiny\Table\Http\Controllers\ConfigController;
+use Jiny\Config\Http\Controllers\ConfigController;
 class SettingController extends ConfigController
 {
     public function __construct()
@@ -21,9 +21,8 @@ class SettingController extends ConfigController
 
         ##
         $this->actions['filename'] = "jiny/modules/setting"; // 설정파일명(경로)
-        $this->actions['view_form'] = "modules::setting.form";
+        $this->actions['view']['form'] = "modules::setting.form";
 
-        // 테마설정
-        setTheme("admin/sidebar");
+        $this->actions['view']['main'] = "modules::setting.layout";
     }
 }

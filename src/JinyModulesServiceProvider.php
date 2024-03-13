@@ -31,6 +31,7 @@ class JinyModulesServiceProvider extends ServiceProvider
 
 
 
+
         // artisan 명령등록
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -48,12 +49,12 @@ class JinyModulesServiceProvider extends ServiceProvider
         /* 라이브와이어 컴포넌트 등록 */
         $this->app->afterResolving(BladeCompiler::class, function () {
             Livewire::component('ModuleInstall', \Jiny\Modules\Http\Livewire\ModuleInstall::class);
-
+            Livewire::component('ModuleList', \Jiny\Modules\Http\Livewire\ModuleList::class);
             Livewire::component('ModuleStore', \Jiny\Modules\Http\Livewire\ModuleStore::class);
             Livewire::component('ModuleStoreInstall', \Jiny\Modules\Http\Livewire\ModuleStoreInstall::class);
         });
 
-        
+
 
     }
 

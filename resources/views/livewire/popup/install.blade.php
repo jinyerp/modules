@@ -4,7 +4,7 @@
 
     <!-- 팝업 데이터 수정창 -->
     @if ($popup)
-    <x-dialog-modal wire:model="popup" maxWidth="2xl">
+    <x-table-dialog-modal wire:model="popup" maxWidth="2xl">
 
         <x-slot name="title">
             {{ $item['title'] }}
@@ -45,7 +45,7 @@
             </x-flex-between>
 
         </x-slot>
-    </x-dialog-modal>
+    </x-table-dialog-modal>
     @endif
 
 </div>

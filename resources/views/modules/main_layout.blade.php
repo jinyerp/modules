@@ -2,8 +2,8 @@
     <x-loading-indicator/>
 
     {{-- 필터를 적용시 filter.blade.php 를 읽어 옵니다. --}}
-    @if (isset($actions['view_filter']))
-        @includeIf($actions['view_filter'])
+    @if (isset($actions['view']['filter']))
+        @includeIf($actions['view']['filter'])
     @endif
 
     @if (session()->has('message'))
@@ -11,8 +11,8 @@
     @endif
 
     <div class="row">
-        @if (isset($actions['view_list']))
-            @includeIf($actions['view_list'])
+        @if (isset($actions['view']['list']))
+            @includeIf($actions['view']['list'])
         @endif
     </div>
 

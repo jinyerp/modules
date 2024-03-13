@@ -1,5 +1,4 @@
 <?php
-
 namespace Jiny\Modules\Http\Controllers;
 
 use App\Http\Controllers\Controller;
@@ -16,7 +15,7 @@ use CzProject\GitPhp\Git;
 use Jiny\Table\Http\Controllers\ResourceController;
 class Modules extends ResourceController
 {
-    use \Jiny\Table\Http\Livewire\Permit;
+    use \Jiny\WireTable\Http\Trait\Permit;
     use \Jiny\Table\Http\Controllers\SetMenu;
 
     public function __construct()
@@ -27,21 +26,24 @@ class Modules extends ResourceController
         $this->actions['table'] = "jiny_modules"; // 테이블 정보
         $this->actions['paging'] = 100; // 페이지 기본값
 
-        $this->actions['view_main'] = "modules::modules.main";
-        $this->actions['view_main_layout'] = "modules::modules.main_layout";
+        $this->actions['view']['main'] = "modules::modules.main";
+        $this->actions['view']['main_layout'] = "modules::modules.main_layout";
 
-        $this->actions['view_filter'] = "modules::modules.filter";
-        $this->actions['view_list'] = "modules::modules.list";
+        $this->actions['view']['filter'] = "modules::modules.filter";
+        $this->actions['view']['list'] = "modules::modules.list";
 
-        $this->actions['view_form'] = "modules::modules.form";
+        $this->actions['view']['form'] = "modules::modules.form";
 
+        $this->actions['title'] = "모듈목록";
+        $this->actions['subtitle'] = "설치된 모듈목록 입니다.";
 
-        // 테마설정
-        //setTheme("admin/sidebar");
     }
+
+
 
     public function hookIndexed($wire, $rows)
     {
+        // 저장소에서 tag 명령을 통하여 최종 버젼을 확인
         $path = base_path('modules').DIRECTORY_SEPARATOR;
 
         foreach($rows as $i => $row) {
@@ -50,8 +52,6 @@ class Modules extends ResourceController
             } else {
                 $rows[$i]->ext = "";
             }
-
-
 
             if(is_dir($path.$row->code)) {
                 $git = new Git;
@@ -70,30 +70,6 @@ class Modules extends ResourceController
 
         }
 
-        /*
-        dd(Module::all());
-
-
-        $path = base_path('Modules').DIRECTORY_SEPARATOR."modules_statuses.json";
-        if(file_exists($path)) {
-            $modules = json_decode(file_get_contents($path),true);
-        } else {
-            $modules = [];
-        }
-
-        for($i=0;$i<count($rows);$i++) {
-            $name = ucfirst($rows[$i]->code);
-
-            if(isset($modules[$name])) {
-                $rows[$i]->enable = $modules[$name];
-                $rows[$i]->installed = true;
-            } else {
-                $rows[$i]->enable = false;
-                $rows[$i]->installed = false;
-            }
-        }
-        */
-
 
         return $rows;
     }
@@ -102,14 +78,6 @@ class Modules extends ResourceController
 
     public function hookStored($wire, $form)
     {
-        // 모듈 패키지의 setup/install 실행
-        /*
-        $name = explode('/', $form['code']);
-        $namespace = "\\".ucfirst($name[0])."\\".ucfirst($name[1])."\\"."Setup";
-        $mod = new $namespace ();
-        $mod->install();
-        */
     }
-
 
 }

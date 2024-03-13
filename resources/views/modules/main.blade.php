@@ -1,10 +1,9 @@
-{{-- 목록을 출력하기 위한 템플릿 --}}
 <x-theme theme="admin.sidebar">
     <x-theme-layout>
         <!-- Module Title Bar -->
-        @if(Module::has('Titlebar'))
+        {{-- @if(Module::has('Titlebar'))
             @livewire('TitleBar', ['actions'=>$actions])
-        @endif
+        @endif --}}
         <!-- end -->
 
         <div class="relative">
@@ -34,26 +33,22 @@
         </script>
         @endpush
 
+        <!-- 목록 출력 -->
+        @livewire('ModuleList', ['actions'=>$actions])
+
+        @livewire('WirePopupForm', ['actions'=>$actions])
 
 
-        @livewire('WireTable', ['actions'=>$actions])
+        @livewire('PopupManual')
 
-        @livewire('Popup-LiveForm', ['actions'=>$actions])
-
-        @livewire('Popup-LiveManual')
 
 
         @livewire('ModuleInstall')
 
-
-
-        {{-- Admin Rule Setting --}}
-        @include('jinytable::setActionRule')
-
-
-        {{-- popup UI Design mode --}}
-        <!-- ui design form -->
-        @livewire('DesignForm')
+        {{-- SuperAdmin Actions Setting --}}
+        @if(Module::has('Actions'))
+            @livewire('setActionRule', ['actions'=>$actions])
+        @endif
 
     </x-theme-layout>
 </x-theme>

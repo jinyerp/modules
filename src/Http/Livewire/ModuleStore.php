@@ -33,7 +33,9 @@ class ModuleStore extends Component
     private function getStoreUrl()
     {
         $url = "https://jinyerp-src.github.io/module-server/modules.json";
-        $client = new Client();
+        $client = new Client([
+            'verify' => false, // Disable SSL verification (not recommended)
+        ]);
         $body = $client->get($url)->getBody();
         return json_decode($body);
     }

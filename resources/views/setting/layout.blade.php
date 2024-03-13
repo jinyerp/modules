@@ -7,13 +7,10 @@
         @endif
         <!-- end -->
 
-
-        @livewire('ModuleStore')
+        @livewire('WireConfigPHP', ['actions'=>$actions])
 
         {{-- SuperAdmin Actions Setting --}}
-        @if(Module::has('Actions'))
-            @livewire('setActionRule', ['actions'=>$actions])
-        @endif
+        @livewire('setActionRule', ['actions'=>$actions])
 
     </x-theme-layout>
 </x-theme>

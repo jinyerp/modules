@@ -1,25 +1,36 @@
 <div>
-    <x-navtab class="mb-3 nav-bordered">
+    <div class="row">
+        <div class="col-6">
 
-        <!-- formTab -->
-        <x-navtab-item class="show active" >
+            <x-navtab class="mb-3 nav-bordered">
 
-            <x-navtab-link class="rounded-0 active">
-                <span class="d-none d-md-block">마켓</span>
-            </x-navtab-link>
+                <!-- formTab -->
+                <x-navtab-item class="show active" >
 
-            <x-form-hor>
-                <x-form-label>스토어 url</x-form-label>
-                <x-form-item>
-                    {!! xInputText()
-                        ->setWire('model.defer',"forms.url")
-                        ->setWidth("standard")
-                    !!}
-                </x-form-item>
-            </x-form-hor>
+                    <x-navtab-link class="rounded-0 active">
+                        <span class="d-none d-md-block">스토어</span>
+                    </x-navtab-link>
 
-        </x-navtab-item>
-        <!-- tab end -->
+                    <form class="form-horizontal">
+                        <div class="row mb-3">
+                            <label for="inputEmail3" class="col-3 col-form-label">스토어URL</label>
+                            <div class="col-9">
+                                <input type="text"
+                                class="form-control"
+                                id="inputEmail3"
+                                placeholder="스토어 서버의 url을 입력해 주세요."
+                                wire:model.defer="forms.url"
+                                >
+                            </div>
+                        </div>
+                    </form>
 
-    </x-navtab>
+                </x-navtab-item>
+                <!-- tab end -->
+
+            </x-navtab>
+
+        </div>
+    </div>
+
 </div>
